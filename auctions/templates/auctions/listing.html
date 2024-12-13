@@ -1,0 +1,111 @@
+{% extends "auctions/layout.html" %} {% block body %}
+<div class="listing-container">
+	<div class="container-a">
+		{% if not listing.is_active %}
+		<div class="auction-closed">
+			<p class="closed-p">Auction Closed</p>
+			{% if user == listing.winner %}
+			<div class="winner-message">
+				<h3>Congratulations! You won this auction!</h3>
+				<p>Final price: ${{ listing.bid }}</p>
+			</div>
+			{% elif listing.winner %}
+			<p>Winner: {{ listing.winner.username }}</p>
+			{% else %}
+			<p>No winner for this auction</p>
+			{% endif %}
+		</div>
+		{% endif %}
+
+		<div class="title-container">
+			<h2>{{ listing.name }}</h2>
+			<p class="listing-category">{{listing.category}}</p>
+			<p class="price-p">Current Price: ${{ listing.bid }}</p>
+		</div>
+
+		<img
+			class="listing-img"
+			src="{{ listing.image.url }}"
+			alt="image for {{listing.name}}"
+		/>
+
+		<p class="listed-by">Listed by {{ listing.seller.username }}</p>
+
+		<div class="watchlist-container">
+			<form action="{% url 'add_to_watchlist' listing.id%}" method="POST">
+				{% csrf_token %}
+				<button type="submit" class="watchlist-btn">Add to watchlist</button>
+			</form>
+
+			<form action="{% url 'remove_from_watchlist' listing.id %}" method="post">
+				{% csrf_token %}
+				<button type="submit" class="watchlist-btn remove">
+					Remove from Watchlist
+				</button>
+			</form>
+		</div>
+	</div>
+
+	<div class="container-b">
+		<div class="description-container">
+			<h3 class="desciprion-title">Description</h3>
+			<p class="listing-description">{{ listing.description }}</p>
+		</div>
+
+		{% if user == listing.seller and listing.is_active %}
+		<form action="{% url 'close_auction' listing.id %}" method="post">
+			{% csrf_token %}
+			<button type="submit" class="btn btn-danger">Close Auction</button>
+		</form>
+		{% endif %}
+
+		<h4>Comments</h4>
+		{% if listing.comments.all %}
+		<ul class="all-comments">
+			{% for comment in listing.comments.all %}
+			<li class="comment">
+				{{ comment.commentContent }}
+				<p class="comment-author">by {{ comment.commenter.username }}</p>
+			</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+
+		<form action="{% url 'comment' listing.id %}" method="POST">
+			{% csrf_token %}
+			<div>
+				<input type="text" name="comment_content" />
+				<button class="comment-btn" type="submit">Add comment</button>
+			</div>
+		</form>
+
+		<h4 class="bids-title">Placed bids</h4>
+		{% if error %}
+		<p style="color: red">{{error}}</p>
+		{% endif %} {% if listing.bids.all %}
+		<ul>
+			{% for bid in listing.bids.all %}
+			<li>
+				${{ bid.bidStarterAmount }}
+				<p class="comment-author">by {{ bid.bidder.username }}</p>
+			</li>
+			{% endfor %}
+		</ul>
+		{% endif %} {% if listing.is_active %}
+		<form action="{% url 'bid' listing.id %}" method="POST">
+			{% csrf_token %}
+			<div>
+				<input
+					type="number"
+					name="bid_amount"
+					step="0.01"
+					min="{{ listing.bid }}"
+					required
+				/>
+				<button class="comment-btn" type="submit">Place Bid</button>
+			</div>
+		</form>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

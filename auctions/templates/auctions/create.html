@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <form action="{% url 'create' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="text" placeholder="Name" name="name">
+        <input type="text" placeholder="Description" name="description">
+        <input type="number" placeholder="Starting Bid" name="bid" min="1">
+        <select name="category" required>
+            <option value="">Select a Category</option>
+            {% for value, label in categories %}
+            <option value="{{ value }}">
+                {{ label }}
+            </option>
+            {% endfor %}
+        </select>
+        <input type="file" name="image" id="image">
+        <input type="submit" >
+    </form>
+
+    <div>
+        {% if error %}
+            {{error}}
+        {% endif %}
+    </div>
+
+{% endblock %}
