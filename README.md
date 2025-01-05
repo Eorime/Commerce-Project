@@ -6,4 +6,5 @@ enabling users to leave comments on product listings. Additionally, a bidding fe
 A Django admin panel is included to facilitate the management of users, products, and other backend functionalities. This project showcases
 essential backend development skills and demonstrates the integration of key features required for a dynamic web application.
 
-[Video Demo](https://img.youtube.com/vi/BBfz2ra_Ujc/0.jpg)](https://youtu.be/BBfz2ra_Ujc)
+[![Video Demo](https://img.youtube.com/vi/BBfz2ra_Ujc/0.jpg)](https://youtu.be/BBfz2ra_Ujc)
+
